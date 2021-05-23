@@ -1,0 +1,20 @@
+{
+    "buildings": ["sis1", "sis2", "lgs", "sepa"],
+    "firstFloatType":9,
+    "FIELDNAMES":[
+        "itemcode"
+        ,"itemname"
+        ,"building"
+        ,"location"
+        ,"detail_location"
+        ,"position"
+        ,"detail_counted"
+        ,"counted_by"
+        ,"codebars"
+        ,"onhand"
+        ,"counted"
+        ,"colisage_vente"
+        ,"colisage_achat"
+    ],
+    "initial_data_path":"./src/public/seedData.csv"
+}
