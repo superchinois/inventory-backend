@@ -25,7 +25,7 @@ module.exports = function() {// if the static data was already set. return it
     //LOAD FROM ENV VARIABLES
     //config_data.DATABASE = process.env.DATABASE;
     let sides = ["a","b"];
-    let levels=["","/1","/2","/3"];
+    let levels=["","_1","_2","_3"];
     let alleys = lodash.range(1,23).flatMap(_=>lodash.zip([_,_],sides)).map(_=>_.join(''));
     let alleys_levels= alleys.flatMap(_=>lodash.zip(multiplex(levels.length)(_),levels)).map(_=>_.join(''));
     config_data.alleys = alleys;

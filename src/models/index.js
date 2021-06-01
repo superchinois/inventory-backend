@@ -1,11 +1,13 @@
 const {Sequelize, DataTypes} = require('sequelize');
+const path = require('path');
 const CONFIG = require("../config/config")();
-const db_filepath = process.env.DATABASE;
+const db_directory = CONFIG.sqlite_db_directory;
+const db_file = process.env.DATABASE || "inventory.db";
 
 const sequelize = new Sequelize(
     {
         dialect: 'sqlite'
-        ,storage: db_filepath
+        ,storage: path.join(db_directory, db_file)
         ,logging: false
     },
 );
