@@ -36,6 +36,7 @@ router.get('/api/items', async (req, res) => {
   },[])
   //console.log(whereClause);
   let filtered = await ItemInventory.findAllItems(whereClause);
+  filtered.sort((a,b)=>{return parseInt(a.position)<parseInt(b.position)});
   res.send(filtered);
 });
 
