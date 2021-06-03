@@ -40,6 +40,16 @@ router.get('/api/items', async (req, res) => {
   res.send(filtered);
 });
 
+router.post('/api/items/:item_id(\\d+)', async (req, res)=>{
+  try {
+    const item = await ItemInventory.create(req.body);
+    return res.status(201).json({
+      item,
+    });
+} catch (error) {
+    return res.status(500).json({ error: error.message })
+}
+});
 router.put('/api/items/:item_id(\\d+)', async (req, res)=>{
   let fields_to_update = req.body;
   let foundOne = await ItemInventory.findByPk(req.params.item_id);
@@ -49,6 +59,11 @@ router.put('/api/items/:item_id(\\d+)', async (req, res)=>{
   } catch (error) {
     res.status(500).send(error);
   }
+});
+
+route.delete('/api/items/:item_id(\\d+)', async (req, res)=>{
+  let n = await ItemInventory.delete({where:{id: item_id}});
+  res.send({deleted_count:n});
 });
 
 router.get('/api/items/locations', (req, res) => {
