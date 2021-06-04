@@ -45,7 +45,7 @@ function batchInsertIfNotExists(itemModel, items){
 }
 
 function batchUpdateExisting(itemModel, items){
-    let foundPromises = items.map(item=> itemModel.findOne({where:{itemcode:item.itemcode}}));
+    let foundPromises = items.map(item=> itemModel.findByPk(item.id));
     let resolved = Promise.all(foundPromises);
     resolved
     .then(resolvedItems => {

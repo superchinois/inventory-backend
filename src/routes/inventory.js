@@ -61,7 +61,7 @@ router.put('/api/items/:item_id(\\d+)', async (req, res)=>{
   }
 });
 
-route.delete('/api/items/:item_id(\\d+)', async (req, res)=>{
+router.delete('/api/items/:item_id(\\d+)', async (req, res)=>{
   let n = await ItemInventory.delete({where:{id: item_id}});
   res.send({deleted_count:n});
 });
