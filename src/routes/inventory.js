@@ -40,7 +40,7 @@ router.get('/api/items', async (req, res) => {
   res.send(filtered);
 });
 
-router.post('/api/items/:item_id(\\d+)', async (req, res)=>{
+router.post('/api/items', async (req, res)=>{
   try {
     const item = await ItemInventory.create(req.body);
     return res.status(201).json({
@@ -62,8 +62,19 @@ router.put('/api/items/:item_id(\\d+)', async (req, res)=>{
 });
 
 router.delete('/api/items/:item_id(\\d+)', async (req, res)=>{
-  let n = await ItemInventory.delete({where:{id: item_id}});
-  res.send({deleted_count:n});
+  try{
+    let foundItem = await ItemInventory.findByPk(req.params.item_id);
+    if(foundItem) {
+      let result = await foundItem.destroy();
+      res.send({message: result});
+    }
+    else {
+      res.status(404).send({message: `item with ID:${item_id} not found`});
+    }
+  } catch(error){
+    res.status(500).send(error);
+  }
+
 });
 
 router.get('/api/items/locations', (req, res) => {
