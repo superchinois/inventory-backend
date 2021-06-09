@@ -30,6 +30,9 @@ const inventoryItem = (sequelize, DataTypes) =>{
         }
         return items;
     };
+    InventoryItem.findByName = async (partialName) =>{
+        return InventoryItem.findAll({where:{itemname:{[Op.like]:`%${partialName}%`}}});
+    };
     return InventoryItem;
 }
 
