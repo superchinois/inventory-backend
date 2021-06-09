@@ -26,17 +26,22 @@ router.get('/api/items/:item_id(\\d+)', async (req, res) => {
 
 router.get('/api/items', async (req, res) => {
   let whereClause=[];
-  let filters = ["building","location","detail_location", "itemcode"]
+  let filters = ["building","location","detail_location", "itemcode"];
   whereClause=filters.reduce((acc, f)=>{
     let query_value = req.query[f];
     if(query_value){
-      return [...acc, {[f]:query_value}]
+      let clause = {[f]:query_value};
+      return [...acc, clause]
     }
     else return acc;
   },[])
-  //console.log(whereClause);
   let filtered = await ItemInventory.findAllItems(whereClause);
   filtered.sort((a,b)=>{return parseInt(a.position)<parseInt(b.position)});
+  console.log(req.query["itemname"])
+  if(req.query["itemname"]){
+    let partialName = req.query["itemname"];
+    filtered = filtered.filter(_=>_.itemname.toLowerCase().includes(partialName.toLowerCase()));
+  }
   res.send(filtered);
 });
 
@@ -77,8 +82,16 @@ router.delete('/api/items/:item_id(\\d+)', async (req, res)=>{
 
 });
 
-router.get('/api/items/locations', (req, res) => {
-  res.status(200).send('Hello World from the server!');
+router.get('/api/items/test', async (req, res) => {
+  let partialName = req.query["itemname"];
+  try {
+    let result = await ItemInventory.findByName(partialName);
+    res.status(200).send(result);
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).send(error);
+  }
+  //res.status(200).send('Hello World from the server!');
 });
 
 module.exports = router;
