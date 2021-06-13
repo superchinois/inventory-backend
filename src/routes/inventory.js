@@ -14,7 +14,9 @@ router.get('/api/alleys', async (req, res)=>{
   res.send(CONFIG.alleys);
 });
 router.get('/api/alleys_levels', async (req, res)=>{
-  let items = await ItemInventory.findAllItems([]);
+  let whereClause = [];
+  if("building" in req.query) whereClause = [{building: req.query["building"]}];
+  let items = await ItemInventory.findAllItems(whereClause);
   let locations = new Set(items.map(_=>_.location));
   res.send(lodash.sortBy(Array.from(locations), _=>parseInt(_.split(/[ab]/)[0])));
   //res.send(CONFIG.alleys_levels);
