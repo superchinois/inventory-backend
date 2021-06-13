@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const {models} = require('../models/index');
 const CONFIG = require("../config/config")();
+const lodash = require("lodash");
 
 const ItemInventory = models.InventoryItem;
 
@@ -13,7 +14,10 @@ router.get('/api/alleys', async (req, res)=>{
   res.send(CONFIG.alleys);
 });
 router.get('/api/alleys_levels', async (req, res)=>{
-  res.send(CONFIG.alleys_levels);
+  let items = await ItemInventory.findAllItems([]);
+  let locations = new Set(items.map(_=>_.location));
+  res.send(lodash.sortBy(Array.from(locations), _=>parseInt(_.split(/[ab]/)[0])));
+  //res.send(CONFIG.alleys_levels);
 });
 
 router.get('/api/items/:item_id(\\d+)', async (req, res) => {
