@@ -61,6 +61,18 @@ router.post('/api/items', async (req, res)=>{
     return res.status(500).json({ error: error.message })
 }
 });
+router.post('/api/bulk/items', async (req, res)=>{
+  try {
+    let items = [];
+    if ("items" in req.body){
+      items = req.body.items;
+      let response = await ItemInventory.bulkCreate(items);
+      res.status(200).json({createdItems: response.map(_=>_.dataValues)})
+    }
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+});
 router.put('/api/items/:item_id(\\d+)', async (req, res)=>{
   let fields_to_update = req.body;
   let foundOne = await ItemInventory.findByPk(req.params.item_id);
