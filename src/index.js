@@ -28,7 +28,7 @@ app.use('/', routes.inventory);
 const port = process.env.PORT || 3000;
 // Start
 const inventoryItem = models.InventoryItem;
-const eraseDatabaseOnSync = true;
+const eraseDatabaseOnSync = CONFIG.eraseDatabaseOnSync;
 sequelize.sync({ force: eraseDatabaseOnSync }).then(async () => {
     if (eraseDatabaseOnSync) {
       console.log("seed database ...");

@@ -1,5 +1,8 @@
 {
     "buildings": ["sis1", "sis2", "lgs", "sepa"],
+    "sis1":["1-9", "tampon", "ssol"],
+    "sepa":["sepa", "cafe", "mais"],
+    "sis2":["1-23","frais","negative"],
     "firstFloatType":9,
     "FIELDNAMES":[
         "itemcode"
@@ -18,6 +21,7 @@
         ,"pcb_pal"
         ,"pu_ht"
     ],
-    "initial_data_path":"./src/public/seedData.csv",
-    "sqlite_db_directory":"/usr/db"
+    "initial_data_path":"./src/public/inventory-mapping.csv",
+    "sqlite_db_directory":"/usr/db",
+    "eraseDatabaseOnSync":false
 }
