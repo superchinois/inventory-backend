@@ -3,8 +3,11 @@ const router = express.Router();
 const {models} = require('../models/index');
 const CONFIG = require("../config/config")();
 const lodash = require("lodash");
+const { Op } = require("sequelize");
+
 
 const ItemInventory = models.InventoryItem;
+const isoStringDate = (date) => date.toISOString().split("T")[0];
 
 router.get('/api/buildings', async (req, res)=>{
   res.send(CONFIG.buildings);
@@ -20,6 +23,13 @@ router.get('/api/alleys_levels', async (req, res)=>{
   let locations = new Set(items.map(_=>_.location));
   res.send(lodash.sortBy(Array.from(locations), _=>parseInt(_.split(/[ab]/)[0])));
   //res.send(CONFIG.alleys_levels);
+});
+
+router.get('/api/items/last_updated', async (req, res)=>{
+  let fromDate = isoStringDate(new Date());
+  if (req.query["from-date"]) fromDate = req.query["from-date"];
+  let updated_items = await ItemInventory.findAll({where:{updatedAt:{[Op.gte]:fromDate}}});
+  return res.status(200).send(updated_items);
 });
 
 router.get('/api/items/:item_id(\\d+)', async (req, res) => {
@@ -43,7 +53,6 @@ router.get('/api/items', async (req, res) => {
   },[])
   let filtered = await ItemInventory.findAllItems(whereClause);
   filtered.sort((a,b)=>{return parseInt(a.position)<parseInt(b.position)});
-  console.log(req.query["itemname"])
   if(req.query["itemname"]){
     let partialName = req.query["itemname"];
     filtered = filtered.filter(_=>_.itemname.toLowerCase().includes(partialName.toLowerCase()));

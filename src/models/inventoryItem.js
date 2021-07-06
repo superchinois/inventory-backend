@@ -36,29 +36,4 @@ const inventoryItem = (sequelize, DataTypes) =>{
     return InventoryItem;
 }
 
-function batchInsertIfNotExists(itemModel, items){
-    let foundPromises = items.map(item=> itemModel.findOne({where:{itemcode:item.itemcode}}));
-    let resolved = Promise.all(foundPromises);
-    resolved
-    .then(resolvedItems => {
-        let filtered = items.filter((_, index)=>!resolvedItems[index]);
-        itemModel.bulkCreate(filtered);
-    })
-    .catch(err=>console.error(err));
-}
-
-function batchUpdateExisting(itemModel, items){
-    let foundPromises = items.map(item=> itemModel.findByPk(item.id));
-    let resolved = Promise.all(foundPromises);
-    resolved
-    .then(resolvedItems => {
-        resolvedItems.forEach((item, index)=>{
-            if(item){
-                item.update(items[index])
-            }
-        });
-    })
-    .catch(err=>console.error(err));
-}
-
 module.exports = inventoryItem;
