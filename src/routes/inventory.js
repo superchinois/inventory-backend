@@ -82,6 +82,18 @@ router.post('/api/bulk/items', async (req, res)=>{
     return res.status(500).json({ error: error.message });
   }
 });
+router.delete('/api/bulk/items', async (req, res)=>{
+  try{
+    let item_ids=[];
+    if ("item_ids" in req.body){
+      item_ids = req.body.item_ids;
+      let response = await ItemInventory.destroy({where: {id: {[Op.in]: item_ids}}});
+      res.status(200).json({deleted_count: response})
+    }
+  } catch (error){
+    return res.status(500).json({error: error.message});
+  }
+});
 router.put('/api/items/:item_id(\\d+)', async (req, res)=>{
   let fields_to_update = req.body;
   let foundOne = await ItemInventory.findByPk(req.params.item_id);
@@ -109,10 +121,11 @@ router.delete('/api/items/:item_id(\\d+)', async (req, res)=>{
 
 });
 
-router.get('/api/items/test', async (req, res) => {
+router.get('/api/items/search', async (req, res) => {
   let partialName = req.query["itemname"];
   try {
-    let result = await ItemInventory.findByName(partialName);
+    let name_to_search = partialName.replace(" ", "%");
+    let result = await ItemInventory.findByName(name_to_search);
     res.status(200).send(result);
   } catch (error) {
     console.log(error.message);
