@@ -126,7 +126,15 @@ router.get('/api/items/search', async (req, res) => {
   try {
     let name_to_search = partialName.replace(" ", "%");
     let result = await ItemInventory.findByName(name_to_search);
-    res.status(200).send(result);
+    let unique=[];
+    let flag={};
+    result.forEach(item=>{
+      if(!flag[item.itemname]){
+        flag[item.itemname]=true;
+        unique.push(item);
+      }
+    });
+    res.status(200).send(unique);
   } catch (error) {
     console.log(error.message);
     res.status(500).send(error);
