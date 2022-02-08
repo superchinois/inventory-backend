@@ -24,7 +24,7 @@ app.use(cookieParser());
 
 app.use(express.static('public'));
 app.use('/', routes.inventory);
-                                                                                                    
+
 const port = process.env.PORT || 3000;
 // Start
 const inventoryItem = models.InventoryItem;
