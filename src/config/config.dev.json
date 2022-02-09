@@ -3,7 +3,7 @@
     "sis1":["1-9", "tampon", "ssol"],
     "sepa":["sepa", "cafe", "mais"],
     "sis2":["1-23","frais","negative"],
-    "firstFloatType":9,
+    "firstFloatType":11,
     "FIELDNAMES":[
         "itemcode"
         ,"itemname"
@@ -14,6 +14,8 @@
         ,"detail_counted"
         ,"counted_by"
         ,"codebars"
+        ,"comments"
+        ,"dluo"
         ,"onhand"
         ,"counted"
         ,"colisage_vente"
@@ -21,7 +23,7 @@
         ,"pcb_pal"
         ,"pu_ht"
     ],
-    "initial_data_path":"./src/public/inventory-mapping.csv",
+    "initial_data_path":"./src/public/seedData.csv",
     "sqlite_db_directory":"/usr/db",
     "eraseDatabaseOnSync":false
 }
