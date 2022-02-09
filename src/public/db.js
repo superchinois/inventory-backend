@@ -39,8 +39,11 @@ const updateUpdatedAt = (sequelize)=>(override_params) => {
 };
 
 const test_override_updatedAt = (csvFile) => {
-    return loadCsv(csvFile).then(R.compose(R.map(R.props(["id","updatedAt"])), R.prop("data"))) // extract id and updatedAt
-    .then(data =>R.zip(...R.map(R.applyTo(data))([R.map(R.nth(0)), R.map(R.compose(R.replace("Z",""),R.replace("T"," "),R.nth(1)))])))
-    .then(R.map(R.zipObj(["id", "date"])))
+    let extract_fields=["updatedAt"];
+    return loadCsv(csvFile).then(R.compose(R.map(R.prop("updatedAt")), R.prop("data"))) // extract id and updatedAt
+    .then(R.map(R.compose(R.replace("Z",""),R.replace("T"," "))))
+    .then(R.addIndex(R.map)((date,index)=>{return {id: index+1, date:date}}))
+    //.then(data =>R.zip(...R.map(R.applyTo(data))([R.map(R.nth(0)), R.map(R.compose(R.replace("Z",""),R.replace("T"," "),R.nth(1)))])))
+    //.then(R.map(R.zipObj(["id", "date"])))
     //.then(R.forEach(updateUpdatedAt(sequelize)))
 };
