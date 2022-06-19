@@ -4,7 +4,7 @@ const {models} = require('../models/index');
 const CONFIG = require("../config/config")();
 const lodash = require("lodash");
 const { Op } = require("sequelize");
-
+const R = require("ramda");
 
 const ItemInventory = models.InventoryItem;
 const isoStringDate = (date) => date.toISOString().split("T")[0];
@@ -69,6 +69,24 @@ router.post('/api/items', async (req, res)=>{
 } catch (error) {
     return res.status(500).json({ error: error.message })
 }
+});
+
+router.put('/api/bulk/items', async (req, res) => {
+  try{
+    let items = [];
+    if ("items" in req.body){ // items must be array
+      items = req.body.items;
+      let promises = items.map(item => {
+        return ItemInventory.update(item.values, {where: {id: item.id}})
+      });
+      let promiseResults = await Promise.all(promises).catch(err => {
+        console.log(err);
+      })
+      res.status(200).json({updatedItems: promiseResults.map(_=>_.dataValues)})
+    }
+  } catch (error) {
+
+  }
 });
 router.post('/api/bulk/items', async (req, res)=>{
   try {
