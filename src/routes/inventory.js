@@ -5,6 +5,26 @@ const CONFIG = require("../config/config")();
 const lodash = require("lodash");
 const { Op } = require("sequelize");
 const R = require("ramda");
+const winston = require('winston');
+const events = require("events");
+
+const eventEmitter = new events.EventEmitter();
+
+const logger = winston.createLogger({
+  level: "info",
+  format: winston.format.combine(
+    winston.format.timestamp({format: 'YYYY-MM-DD HH:mm:ss'})
+    ,winston.format.json()
+    //,winston.format.printf(info => `${info.timestamp} [${info.level}]: ${JSON.stringify(info.message, null, 2)}`)
+    ),
+  transports: [
+    new winston.transports.File({filename: "combined.log"})
+  ],
+});
+
+eventEmitter.on('bulk.put',(payload) => {
+  logger.log({level:"info", message:`uptated items count: ${payload.length}`, payload: payload});
+})
 
 const ItemInventory = models.InventoryItem;
 const isoStringDate = (date) => date.toISOString().split("T")[0];
@@ -73,6 +93,9 @@ router.post('/api/items', async (req, res)=>{
 
 router.put('/api/bulk/items', async (req, res) => {
   try{
+    /**
+     * items : [{id: "_id_", values:{onhand:"_onhand_", counted: -1, ...}}, ...]
+     */
     let items = [];
     if ("items" in req.body){ // items must be array
       items = req.body.items;
@@ -80,12 +103,20 @@ router.put('/api/bulk/items', async (req, res) => {
         return ItemInventory.update(item.values, {where: {id: item.id}})
       });
       let promiseResults = await Promise.all(promises).catch(err => {
-        console.log(err);
-      })
-      res.status(200).json({updatedItems: promiseResults.map(_=>_.dataValues)})
+        logger.error(err);
+      });
+      updatedItems = promiseResults.reduce((arr, current, currentIndex) => {
+        if (Array.isArray(current)){
+          return current[0]==1?[...arr, items[currentIndex]]:arr; 
+        } else {
+          return arr;
+        }
+      }, []);
+      eventEmitter.emit('bulk.put',updatedItems);
+      res.status(200).json({updatedItems: updatedItems});
     }
   } catch (error) {
-
+    logger.error(error)
   }
 });
 router.post('/api/bulk/items', async (req, res)=>{
