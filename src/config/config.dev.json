@@ -1,5 +1,5 @@
 {
-    "buildings": ["sis1", "sis2", "lgs", "sepa", "badamiers"],
+    "buildings": ["sis1", "sis2", "lgs", "badamiers", "rdt"],
     "sis1":["1-9", "tampon", "ssol"],
     "sepa":["sepa", "cafe", "mais"],
     "sis2":["1-23","frais","negative"],
